@@ -1,4 +1,4 @@
-package com.zerosolutions.warehousemanagementsystem.common.security.data.entity;
+package com.zerosolutions.warehousemanagementsystem.common.security.jwt.data.entity;
 
 import com.zerosolutions.warehousemanagementsystem.common.data.entity.BaseEntity;
 
