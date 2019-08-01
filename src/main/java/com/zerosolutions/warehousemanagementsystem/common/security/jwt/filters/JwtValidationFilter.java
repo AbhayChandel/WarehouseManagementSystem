@@ -3,6 +3,8 @@ package com.zerosolutions.warehousemanagementsystem.common.security.jwt.filters;
 import com.zerosolutions.warehousemanagementsystem.common.security.jwt.business.JwtUserDetailsService;
 import com.zerosolutions.warehousemanagementsystem.common.security.jwt.business.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,8 @@ import java.io.IOException;
 
 @Component
 public class JwtValidationFilter extends OncePerRequestFilter {
+
+    private static final Logger LOGGER = LogManager.getLogger(JwtValidationFilter.class);
 
     private final JwtUserDetailsService jwtUserDetailsService;
 
@@ -45,12 +49,12 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                LOGGER.error("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                LOGGER.error("JWT Token has expired");
             }
         } else {
-            logger.warn("JWT Token does not begin with Bearer String");
+            LOGGER.error("JWT Token does not begin with Bearer String");
         }
 
         // Once we get the token validate it.
