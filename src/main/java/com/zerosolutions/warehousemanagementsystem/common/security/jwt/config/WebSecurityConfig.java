@@ -1,6 +1,6 @@
 package com.zerosolutions.warehousemanagementsystem.common.security.jwt.config;
 
-import com.zerosolutions.warehousemanagementsystem.common.security.jwt.filters.JwtRequestFilter;
+import com.zerosolutions.warehousemanagementsystem.common.security.jwt.filters.JwtValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +23,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final UserDetailsService jwtUserDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
+    private final JwtValidationFilter jwtValidationFilter;
 
     @Autowired
-    public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, UserDetailsService jwtUserDetailsService, JwtValidationFilter jwtValidationFilter) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtUserDetailsService = jwtUserDetailsService;
-        this.jwtRequestFilter = jwtRequestFilter;
+        this.jwtValidationFilter = jwtValidationFilter;
     }
 
     @Autowired
@@ -65,6 +65,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Add a filter to validate the tokens with every request
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

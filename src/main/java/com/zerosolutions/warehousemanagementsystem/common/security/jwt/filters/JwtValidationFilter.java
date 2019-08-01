@@ -18,14 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class JwtRequestFilter extends OncePerRequestFilter {
+public class JwtValidationFilter extends OncePerRequestFilter {
 
     private final JwtUserDetailsService jwtUserDetailsService;
 
     private final JwtUtil jwtUtil;
 
     @Autowired
-    JwtRequestFilter(JwtUserDetailsService jwtUserDetailsService, JwtUtil jwtUtil) {
+    JwtValidationFilter(JwtUserDetailsService jwtUserDetailsService, JwtUtil jwtUtil) {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtUtil = jwtUtil;
     }

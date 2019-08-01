@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,13 +13,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class JwtSecurityIT {
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -45,7 +43,7 @@ class JwtSecurityIT {
 
     @Test
     void testAccessSecuredResourceWithoutAccessToken() {
-        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity("/inventory", String.class);
+        ResponseEntity<String> responseEntity = this.restTemplate.getForEntity("/stock/itemcategory/all", String.class);
         Assertions.assertEquals(401, responseEntity.getStatusCodeValue());
     }
 }
