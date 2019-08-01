@@ -1,0 +1,43 @@
+{
+  "configuration": {
+    "status": "WARN",
+    "monitorInterval": "30",
+    "name": "Default",
+    "properties": {
+      "property": [
+        {
+          "name": "LOG_PATTERN",
+          "value": "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex"
+        }
+      ]
+    },
+    "appenders": {
+      "Console": {
+        "name": "Console-Appender",
+        "target": "SYSTEM_OUT",
+        "follow": "true",
+        "PatternLayout": {
+          "pattern": "${LOG_PATTERN}"
+        }
+      }
+    },
+    "loggers": {
+      "logger": {
+        "name": "com.zerosolutions.warehousemanagementsystem.WarehouseManagementSystemApplication",
+        "level": "debug",
+        "additivity": "false",
+        "appender-ref": [
+          {
+            "ref": "Console-Appender"
+          }
+        ]
+      },
+      "root": {
+        "level": "debug",
+        "appender-ref": {
+          "ref": "Console-Appender"
+        }
+      }
+    }
+  }
+}
