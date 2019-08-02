@@ -1,7 +1,7 @@
 package com.zerosolutions.warehousemanagementsystem.stock.services.impl.rest;
 
-import com.zerosolutions.warehousemanagementsystem.stock.business.api.ItemCategory;
-import com.zerosolutions.warehousemanagementsystem.stock.data.entity.ItemCategoryEntity;
+import com.zerosolutions.warehousemanagementsystem.stock.business.api.dto.ItemCategoryDto;
+import com.zerosolutions.warehousemanagementsystem.stock.business.api.usecase.ItemCategory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,10 @@ class ItemCategoryRestServiceImplTest {
 
     @Test
     void testFindById() throws Exception {
-        ItemCategoryEntity itemCategoryEntity = new ItemCategoryEntity("Apple");
-        itemCategoryEntity.setId(15L);
-        when(itemCategory.findItemCategoryById(15L)).thenReturn(itemCategoryEntity);
+        ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
+        itemCategoryDto.setName("Apple");
+        itemCategoryDto.setId(15L);
+        when(itemCategory.findItemCategoryById(15L)).thenReturn(itemCategoryDto);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/find/id/15"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.id").value("15"))
                 .andExpect(jsonPath("$.name").value("Apple"));

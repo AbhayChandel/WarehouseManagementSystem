@@ -2,7 +2,7 @@ package com.zerosolutions.warehousemanagementsystem.stock;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zerosolutions.warehousemanagementsystem.stock.data.entity.ItemCategoryEntity;
+import com.zerosolutions.warehousemanagementsystem.stock.business.api.dto.ItemCategoryDto;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ItemCategoryIT {
@@ -48,10 +50,11 @@ public class ItemCategoryIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
         HttpEntity<String> httpEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange("/stock/itemcategory/all", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<List<ItemCategoryDto>> responseEntity = restTemplate.exchange("/stock/itemcategory/all", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<ItemCategoryDto>>() {
+        });
         Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
-        JsonNode root = objectMapper.readTree(responseEntity.getBody());
-        Assertions.assertTrue(root.size() >= 2);
+        List<ItemCategoryDto> itemCategoryDtos = responseEntity.getBody();
+        Assertions.assertTrue(itemCategoryDtos.size() >= 2);
     }
 
     @Test
@@ -62,14 +65,14 @@ public class ItemCategoryIT {
         JSONObject requestJson = new JSONObject();
         requestJson.put("name", "Orange");
         HttpEntity<String> request = new HttpEntity<>(requestJson.toString(), headers);
-        ResponseEntity<ItemCategoryEntity> responseEntity = this.restTemplate.postForEntity("/stock/itemcategory/save", request, ItemCategoryEntity.class);
+        ResponseEntity<ItemCategoryDto> responseEntity = this.restTemplate.postForEntity("/stock/itemcategory/save", request, ItemCategoryDto.class);
         Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
 
         HttpEntity<String> httpEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<ItemCategoryEntity> itemCategoryEntityResponseEntity = restTemplate.exchange("/stock/itemcategory/find/name/Orange", HttpMethod.GET, httpEntity, ItemCategoryEntity.class);
-        ItemCategoryEntity itemCategoryEntity = itemCategoryEntityResponseEntity.getBody();
-        Assertions.assertNotNull(itemCategoryEntity);
-        Assertions.assertEquals("Orange", itemCategoryEntity.getName());
+        ResponseEntity<ItemCategoryDto> itemCategoryEntityResponseEntity = restTemplate.exchange("/stock/itemcategory/find/name/Orange", HttpMethod.GET, httpEntity, ItemCategoryDto.class);
+        ItemCategoryDto itemCategoryDto = itemCategoryEntityResponseEntity.getBody();
+        Assertions.assertNotNull(itemCategoryDto);
+        Assertions.assertEquals("Orange", itemCategoryDto.getName());
     }
 
     @Test
@@ -77,10 +80,10 @@ public class ItemCategoryIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
         HttpEntity<String> httpEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<ItemCategoryEntity> responseEntity = restTemplate.exchange("/stock/itemcategory/find/id/2", HttpMethod.GET, httpEntity, ItemCategoryEntity.class);
-        ItemCategoryEntity itemCategoryEntity = responseEntity.getBody();
-        Assertions.assertNotNull(itemCategoryEntity);
-        Assertions.assertEquals("Capsicum", itemCategoryEntity.getName());
+        ResponseEntity<ItemCategoryDto> responseEntity = restTemplate.exchange("/stock/itemcategory/find/id/2", HttpMethod.GET, httpEntity, ItemCategoryDto.class);
+        ItemCategoryDto itemCategoryDto = responseEntity.getBody();
+        Assertions.assertNotNull(itemCategoryDto);
+        Assertions.assertEquals("Capsicum", itemCategoryDto.getName());
     }
 
     @Test
@@ -88,9 +91,9 @@ public class ItemCategoryIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
         HttpEntity<String> httpEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<ItemCategoryEntity> responseEntity = restTemplate.exchange("/stock/itemcategory/find/name/Capsicum", HttpMethod.GET, httpEntity, ItemCategoryEntity.class);
-        ItemCategoryEntity itemCategoryEntity = responseEntity.getBody();
-        Assertions.assertNotNull(itemCategoryEntity);
-        Assertions.assertEquals(Long.valueOf(2), itemCategoryEntity.getId());
+        ResponseEntity<ItemCategoryDto> responseEntity = restTemplate.exchange("/stock/itemcategory/find/name/Capsicum", HttpMethod.GET, httpEntity, ItemCategoryDto.class);
+        ItemCategoryDto itemCategoryDto = responseEntity.getBody();
+        Assertions.assertNotNull(itemCategoryDto);
+        Assertions.assertEquals(Long.valueOf(2), itemCategoryDto.getId());
     }
 }
