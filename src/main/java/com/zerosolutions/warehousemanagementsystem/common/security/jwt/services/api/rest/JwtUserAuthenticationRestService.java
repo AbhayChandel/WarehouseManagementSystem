@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface JwtUserAuthenticationRestService {
 
     @PostMapping(value = "/authenticate")
-    ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception;
+    ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest jwtRequest);
 }

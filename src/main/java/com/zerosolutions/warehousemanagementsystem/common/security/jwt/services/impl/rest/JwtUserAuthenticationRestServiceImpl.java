@@ -19,7 +19,7 @@ public class JwtUserAuthenticationRestServiceImpl implements JwtUserAuthenticati
     }
 
     @Override
-    public ResponseEntity<JwtResponse> createAuthenticationToken(JwtRequest jwtRequest) throws Exception {
+    public ResponseEntity<JwtResponse> createAuthenticationToken(JwtRequest jwtRequest) {
         return ResponseEntity.ok(new JwtResponse(jwtUserAuthentication.authenticate(jwtRequest.getUsername(), jwtRequest.getPassword())));
     }
 }
