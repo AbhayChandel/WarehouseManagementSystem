@@ -5,8 +5,6 @@ import com.zerosolutions.warehousemanagementsystem.common.security.jwt.business.
 import com.zerosolutions.warehousemanagementsystem.common.security.jwt.business.api.JwtUserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -27,7 +25,7 @@ public class JwtUserAuthenticationImpl implements JwtUserAuthentication {
 
 
     @Override
-    public String authenticate(String username, String password) throws Exception {
+    public String authenticate(String username, String password) {
         usernamePasswordAuthenticate(username, password);
 
         final UserDetails userDetails = jwtUserDetailsService
@@ -36,13 +34,7 @@ public class JwtUserAuthenticationImpl implements JwtUserAuthentication {
         return jwtUtil.generateToken(userDetails);
     }
 
-    private void usernamePasswordAuthenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
+    private void usernamePasswordAuthenticate(String username, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }

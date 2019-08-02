@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface JwtUserAuthentication {
 
-    String authenticate(String username, String password) throws Exception;
+    String authenticate(String username, String password);
 }
