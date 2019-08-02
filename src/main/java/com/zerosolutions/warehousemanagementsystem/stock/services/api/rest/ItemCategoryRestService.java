@@ -1,6 +1,6 @@
 package com.zerosolutions.warehousemanagementsystem.stock.services.api.rest;
 
-import com.zerosolutions.warehousemanagementsystem.stock.data.entity.ItemCategoryEntity;
+import com.zerosolutions.warehousemanagementsystem.stock.business.api.dto.ItemCategoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,14 +10,14 @@ import java.util.List;
 public interface ItemCategoryRestService {
 
     @GetMapping(value = "/all")
-    ResponseEntity<List<ItemCategoryEntity>> findAllItemCategories();
+    ResponseEntity<List<ItemCategoryDto>> findAllItemCategories();
 
     @PostMapping(value = "/save")
-    ResponseEntity<ItemCategoryEntity> save(@RequestBody ItemCategoryEntity itemCategoryEntity);
+    ResponseEntity<ItemCategoryDto> save(@RequestBody ItemCategoryDto itemCategoryDto);
 
     @GetMapping(value = "/find/id/{id}")
-    ResponseEntity<ItemCategoryEntity> findById(@PathVariable("id") Long id);
+    ResponseEntity<ItemCategoryDto> findById(@PathVariable("id") Long id);
 
     @GetMapping(value = "/find/name/{name}")
-    ResponseEntity<ItemCategoryEntity> findByName(@PathVariable("name") String name);
+    ResponseEntity<ItemCategoryDto> findByName(@PathVariable("name") String name);
 }
