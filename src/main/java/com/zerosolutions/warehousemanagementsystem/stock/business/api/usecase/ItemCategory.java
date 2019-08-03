@@ -8,9 +8,9 @@ public interface ItemCategory {
 
     List<ItemCategoryDto> findAll();
 
-    ItemCategoryDto saveItemCategory(String name);
+    ItemCategoryDto save(String name);
 
-    ItemCategoryDto findItemCategoryById(Long id);
+    ItemCategoryDto findById(Long id);
 
-    ItemCategoryDto findItemCategoryByName(String name);
+    ItemCategoryDto findByName(String name);
 }

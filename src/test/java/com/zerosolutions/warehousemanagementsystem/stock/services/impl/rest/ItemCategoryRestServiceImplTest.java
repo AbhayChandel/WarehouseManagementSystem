@@ -39,7 +39,13 @@ class ItemCategoryRestServiceImplTest {
     ObjectMapper objectMapper;
 
     @Test
-    void testFindAll() throws Exception {
+    public void testFindAllHttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    void testFindAllJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDtoApple = new ItemCategoryDto();
         itemCategoryDtoApple.setName("Apple");
         itemCategoryDtoApple.setId(15L);
@@ -57,26 +63,49 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
-    void testSave() throws Exception {
+    public void testSaveHttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    public void testSaveHttpMethodBadRequestError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/stock/itemcategory/save")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    /*
+    This test should fail after implementation of issue #31
+     */
+    void testSaveJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Orange");
         itemCategoryDto.setId(15L);
-        when(itemCategory.saveItemCategory(any())).thenReturn(itemCategoryDto);
+        when(itemCategory.save(any())).thenReturn(itemCategoryDto);
         ItemCategoryDto itemCategoryDtoObject = new ItemCategoryDto();
         String requestBody = objectMapper.writeValueAsString(itemCategoryDto);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/stock/itemcategory/save")
                 .content(requestBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.name").value("Orange"));
+                .andExpect(jsonPath("$.name").value("Orange"))
+                .andExpect(jsonPath("$.id").value("15"));
     }
 
     @Test
-    void testFindById() throws Exception {
+    public void testFindByIdHttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    void testFindByIdJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Apple");
         itemCategoryDto.setId(15L);
-        when(itemCategory.findItemCategoryById(15L)).thenReturn(itemCategoryDto);
+        when(itemCategory.findById(15L)).thenReturn(itemCategoryDto);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/id/15"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -85,11 +114,17 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
-    void testFindByName() throws Exception {
+    public void testFindByNameHttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    void testFindByNameJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Apple");
         itemCategoryDto.setId(35L);
-        when(itemCategory.findItemCategoryByName("Apple")).thenReturn(itemCategoryDto);
+        when(itemCategory.findByName("Apple")).thenReturn(itemCategoryDto);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/name/Apple"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))

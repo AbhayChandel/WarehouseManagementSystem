@@ -30,20 +30,20 @@ public class ItemCategoryImpl implements ItemCategory {
     }
 
     @Override
-    public ItemCategoryDto saveItemCategory(String name) {
+    public ItemCategoryDto save(String name) {
         ItemCategoryEntity itemCategoryEntity = itemCategoryRepository.save(new ItemCategoryEntity(name));
         return itemCategoryMapper.toDto(itemCategoryEntity);
     }
 
     @Override
-    public ItemCategoryDto findItemCategoryById(Long id) {
+    public ItemCategoryDto findById(Long id) {
         Optional<ItemCategoryEntity> itemCategoryEntityOptional = itemCategoryRepository.findById(id);
         ItemCategoryEntity itemCategoryEntity = itemCategoryEntityOptional.orElseGet(ItemCategoryEntity::new);
         return itemCategoryMapper.toDto(itemCategoryEntity);
     }
 
     @Override
-    public ItemCategoryDto findItemCategoryByName(String name) {
+    public ItemCategoryDto findByName(String name) {
         Optional<ItemCategoryEntity> itemCategoryEntityOptional = itemCategoryRepository.findByName(name);
         ItemCategoryEntity itemCategoryEntity = itemCategoryEntityOptional.orElseGet(ItemCategoryEntity::new);
         return itemCategoryMapper.toDto(itemCategoryEntity);
