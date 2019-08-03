@@ -43,7 +43,7 @@ class ItemCategoryImplTest {
         ItemCategoryEntity itemCategoryEntityMocked = new ItemCategoryEntity("Apple");
         itemCategoryEntityMocked.setId(15L);
         when(itemCategoryRepository.save(any())).thenReturn(itemCategoryEntityMocked);
-        ItemCategoryDto itemCategoryDto = itemCategory.saveItemCategory("Apple");
+        ItemCategoryDto itemCategoryDto = itemCategory.save("Apple");
         assertEquals(Long.valueOf(15), itemCategoryDto.getId());
 
     }
@@ -52,7 +52,7 @@ class ItemCategoryImplTest {
     void findItemCategoryById() {
         Optional<ItemCategoryEntity> itemCategoryEntityMocked = Optional.of(new ItemCategoryEntity("Apple"));
         when(itemCategoryRepository.findById(100L)).thenReturn(itemCategoryEntityMocked);
-        ItemCategoryDto itemCategoryEntity = itemCategory.findItemCategoryById(100L);
+        ItemCategoryDto itemCategoryEntity = itemCategory.findById(100L);
         assertEquals("Apple", itemCategoryEntity.getName());
     }
 
@@ -62,7 +62,7 @@ class ItemCategoryImplTest {
         itemCategoryEntityMocked.setId(50L);
         Optional<ItemCategoryEntity> itemCategoryEntityMockedOptional = Optional.of(itemCategoryEntityMocked);
         when(itemCategoryRepository.findByName("Apple")).thenReturn(itemCategoryEntityMockedOptional);
-        ItemCategoryDto itemCategoryEntity = itemCategory.findItemCategoryByName("Apple");
+        ItemCategoryDto itemCategoryEntity = itemCategory.findByName("Apple");
         assertEquals(Long.valueOf(50), itemCategoryEntity.getId());
     }
 }

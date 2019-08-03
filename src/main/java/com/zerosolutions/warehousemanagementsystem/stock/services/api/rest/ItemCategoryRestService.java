@@ -10,7 +10,7 @@ import java.util.List;
 public interface ItemCategoryRestService {
 
     @GetMapping(value = "/all")
-    ResponseEntity<List<ItemCategoryDto>> findAllItemCategories();
+    ResponseEntity<List<ItemCategoryDto>> findAll();
 
     @PostMapping(value = "/save")
     ResponseEntity<ItemCategoryDto> save(@RequestBody ItemCategoryDto itemCategoryDto);

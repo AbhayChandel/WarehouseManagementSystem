@@ -21,22 +21,22 @@ public class ItemCategoryRestServiceImpl implements ItemCategoryRestService {
     ObjectMapper objectMapper;
 
     @Override
-    public ResponseEntity<List<ItemCategoryDto>> findAllItemCategories() {
+    public ResponseEntity<List<ItemCategoryDto>> findAll() {
         return ResponseEntity.ok(itemCategory.findAll());
     }
 
     @Override
     public ResponseEntity<ItemCategoryDto> save(ItemCategoryDto itemCategoryDto) {
-        return ResponseEntity.ok(itemCategory.saveItemCategory(itemCategoryDto.getName()));
+        return ResponseEntity.ok(itemCategory.save(itemCategoryDto.getName()));
     }
 
     @Override
     public ResponseEntity<ItemCategoryDto> findById(Long id) {
-        return ResponseEntity.ok(itemCategory.findItemCategoryById(id));
+        return ResponseEntity.ok(itemCategory.findById(id));
     }
 
     @Override
     public ResponseEntity<ItemCategoryDto> findByName(String name) {
-        return ResponseEntity.ok(itemCategory.findItemCategoryByName(name));
+        return ResponseEntity.ok(itemCategory.findByName(name));
     }
 }
