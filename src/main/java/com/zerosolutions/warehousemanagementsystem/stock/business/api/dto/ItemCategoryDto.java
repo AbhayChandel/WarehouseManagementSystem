@@ -1,8 +1,12 @@
 package com.zerosolutions.warehousemanagementsystem.stock.business.api.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class ItemCategoryDto {
 
     private Long id;
+
+    @NotNull
     private String name;
 
     public Long getId() {

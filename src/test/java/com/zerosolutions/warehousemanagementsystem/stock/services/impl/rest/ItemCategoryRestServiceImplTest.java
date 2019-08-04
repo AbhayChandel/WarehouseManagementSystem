@@ -1,6 +1,7 @@
 package com.zerosolutions.warehousemanagementsystem.stock.services.impl.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerosolutions.warehousemanagementsystem.common.error.advice.ErrorResult;
 import com.zerosolutions.warehousemanagementsystem.common.security.jwt.filters.JwtValidationFilter;
 import com.zerosolutions.warehousemanagementsystem.stock.business.api.dto.ItemCategoryDto;
 import com.zerosolutions.warehousemanagementsystem.stock.business.api.usecase.ItemCategory;
@@ -14,12 +15,14 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,13 +42,13 @@ class ItemCategoryRestServiceImplTest {
     ObjectMapper objectMapper;
 
     @Test
-    public void testFindAllHttpMethodNotAllowedError() throws Exception {
+    public void findAll_HttpMethodNotAllowedError() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
-    void testFindAllJsonResponse() throws Exception {
+    void findAll_ValidateJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDtoApple = new ItemCategoryDto();
         itemCategoryDtoApple.setName("Apple");
         itemCategoryDtoApple.setId(15L);
@@ -63,28 +66,39 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
-    public void testSaveHttpMethodNotAllowedError() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+    public void save_HttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/save"))
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
-    public void testSaveHttpMethodBadRequestError() throws Exception {
+    public void save_MissingRequestObject() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.post("/stock/itemcategory/save")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    /*
-    This test should fail after implementation of issue #31
-     */
-    void testSaveJsonResponse() throws Exception {
+    public void save_NameParameterMissing() throws Exception {
+        ItemCategoryDto itemCategoryDtoObject = new ItemCategoryDto();
+        String requestBody = objectMapper.writeValueAsString(itemCategoryDtoObject);
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.post("/stock/itemcategory/save")
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        ErrorResult expectedErrorResponse = new ErrorResult("name", "must not be null");
+        String expectedResponseBody = objectMapper.writeValueAsString(expectedErrorResponse);
+        String actualResponseBody = mvcResult.getResponse().getContentAsString();
+        assertEquals(expectedResponseBody, actualResponseBody);
+    }
+
+    @Test
+    void save_ValidateJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Orange");
         itemCategoryDto.setId(15L);
         when(itemCategory.save(any())).thenReturn(itemCategoryDto);
-        ItemCategoryDto itemCategoryDtoObject = new ItemCategoryDto();
         String requestBody = objectMapper.writeValueAsString(itemCategoryDto);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/stock/itemcategory/save")
                 .content(requestBody).contentType(MediaType.APPLICATION_JSON))
@@ -95,13 +109,26 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
-    public void testFindByIdHttpMethodNotAllowedError() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+    public void findById_HttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/find/id/10"))
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
-    void testFindByIdJsonResponse() throws Exception {
+    public void findById_IdParameterInvalid() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/id/ab")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        ErrorResult expectedErrorResponse = new ErrorResult("id", "value is not valid");
+        String expectedResponseBody = objectMapper.writeValueAsString(expectedErrorResponse);
+        String actualResponseBody = mvcResult.getResponse().getContentAsString();
+        assertEquals(expectedResponseBody, actualResponseBody);
+    }
+
+    @Test
+    void findById_ValidateJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Apple");
         itemCategoryDto.setId(15L);
@@ -114,13 +141,33 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
-    public void testFindByNameHttpMethodNotAllowedError() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/all"))
+    public void findByName_HttpMethodNotAllowedError() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/stock/itemcategory/find/name/Apple"))
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
-    void testFindByNameJsonResponse() throws Exception {
+    public void findByName_InvalidNameParameter() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/name/Apple-72")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        ErrorResult expectedErrorResponse = new ErrorResult("name", "value is not valid");
+        String expectedResponseBody = objectMapper.writeValueAsString(expectedErrorResponse);
+        String actualResponseBody = mvcResult.getResponse().getContentAsString();
+        assertEquals(expectedResponseBody, actualResponseBody);
+    }
+
+    @Test
+    public void findByName_ValidNameParameter() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/name/Apple72")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findByName_JsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Apple");
         itemCategoryDto.setId(35L);
@@ -130,4 +177,6 @@ class ItemCategoryRestServiceImplTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.id").value("35"));
     }
+
+
 }

@@ -121,6 +121,14 @@
         </dependency>
         <!-- End of Util dependencies -->
 
+        <!-- Validation dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- End of Validation dependencies -->
+
+
     </dependencies>
 
     <build>
