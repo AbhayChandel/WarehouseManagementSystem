@@ -6,6 +6,7 @@ import com.zerosolutions.warehousemanagementsystem.common.security.jwt.filters.J
 import com.zerosolutions.warehousemanagementsystem.stock.business.api.dto.ItemCategoryDto;
 import com.zerosolutions.warehousemanagementsystem.stock.business.api.usecase.ItemCategory;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcSecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,7 +25,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(value = ItemCategoryRestServiceImpl.class,
@@ -94,6 +95,19 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
+    public void save_ParametersPassedToBusinessLayer() throws Exception {
+        ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
+        itemCategoryDto.setName("Kiwi");
+        String requestBody = objectMapper.writeValueAsString(itemCategoryDto);
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/stock/itemcategory/save")
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON));
+
+        ArgumentCaptor<String> itemCategoryDtoArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(itemCategory, times(1)).save(itemCategoryDtoArgumentCaptor.capture());
+        assertEquals("Kiwi", itemCategoryDtoArgumentCaptor.getValue());
+    }
+
+    @Test
     void save_ValidateJsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Orange");
@@ -125,6 +139,15 @@ class ItemCategoryRestServiceImplTest {
         String expectedResponseBody = objectMapper.writeValueAsString(expectedErrorResponse);
         String actualResponseBody = mvcResult.getResponse().getContentAsString();
         assertEquals(expectedResponseBody, actualResponseBody);
+    }
+
+    @Test
+    public void findById_ParametersPassedToBusinessLayer() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/id/51"));
+
+        ArgumentCaptor<Long> idArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(itemCategory, times(1)).findById(idArgumentCaptor.capture());
+        assertEquals(Long.valueOf(51), idArgumentCaptor.getValue());
     }
 
     @Test
@@ -167,6 +190,15 @@ class ItemCategoryRestServiceImplTest {
     }
 
     @Test
+    public void findByName_ParametersPassedToBusinessLayer() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/stock/itemcategory/find/name/Jackfruit"));
+
+        ArgumentCaptor<String> nameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(itemCategory, times(1)).findByName(nameArgumentCaptor.capture());
+        assertEquals("Jackfruit", nameArgumentCaptor.getValue());
+    }
+
+    @Test
     void findByName_JsonResponse() throws Exception {
         ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
         itemCategoryDto.setName("Apple");
@@ -177,6 +209,5 @@ class ItemCategoryRestServiceImplTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.id").value("35"));
     }
-
 
 }
